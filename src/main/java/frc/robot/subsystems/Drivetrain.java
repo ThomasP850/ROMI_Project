@@ -19,8 +19,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.IO;
 
 import frc.robot.subsystems.SubsystemManager;
+import java.util.logging.Logger;
 
 public class Drivetrain extends SubsystemBase {
+
+  private static Logger logger = Logger.getLogger("Drivetrain");
+
   // Track width in meters
   private static final double TRACK_WIDTH = 0.1397;
 
@@ -67,17 +71,14 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(odometry != null) {
+    /*if(odometry != null) {
       odometry.update(
         Rotation2d.fromDegrees(SubsystemManager.getInstance().getTelemetry().getGyro().getAngleZ()),
         leftEncoder.getDistance(),
         rightEncoder.getDistance()
       );
-    }
-    if(DriverStation.getInstance().isOperatorControl()) {
-      IO io = SubsystemManager.getInstance().getIO();
-      drive(new Translation2d(io.getStrafeX(), io.getStrafeY()), io.getRotationX());
-    }
+    }*/
+    drive(SubsystemManager.getInstance().getIO().getStrafeY(), SubsystemManager.getInstance().getIO().getRotationX());
   }
 
   public void resetOdometry() {
@@ -90,10 +91,8 @@ public class Drivetrain extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
-  public void drive(Translation2d translation, double rotation) {
-    ChassisSpeeds speeds = new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
-    DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(speeds);
-    leftSpark.set(wheelSpeeds.leftMetersPerSecond);
-    rightSpark.set(wheelSpeeds.rightMetersPerSecond);
+  public void drive(double speed, double rotation) {
+    System.out.println("Speed: " + speed);
+    drivetrain.arcadeDrive(speed, rotation);
   }
 }

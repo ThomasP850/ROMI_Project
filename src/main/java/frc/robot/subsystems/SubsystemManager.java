@@ -17,7 +17,11 @@ public class SubsystemManager extends SubsystemBase {
   private IO io;
 
   /** Creates a new SubsystemManager. */
-  public SubsystemManager() {}
+  public SubsystemManager() {
+    if(instance == null) {
+      instance = this;
+    }
+  }
 
   public static SubsystemManager getInstance() {
     if(instance == null) {
